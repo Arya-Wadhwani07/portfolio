@@ -46,35 +46,92 @@ const G = () => (
     /* NAV */
     nav {
       position: fixed; top: 0; inset-x: 0; z-index: 200;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 64px;
-      background: rgba(4,6,15,0.60);
+      display: flex; align-items: center;
+      gap: 0;
+      padding: 0 48px;
+      height: 64px;
+      background: rgba(4,6,15,0.65);
       backdrop-filter: blur(24px) saturate(150%);
       border-bottom: 1px solid var(--border);
-      transition: padding .3s;
+      transition: height .3s, background .3s;
     }
-    nav.sc { padding: 12px 64px; }
-    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .nav-logo-name { font-family: var(--font-h); font-weight: 900; font-size: 1.1rem; letter-spacing: -.5px; color: var(--white); }
+    nav.sc { height: 52px; background: rgba(4,6,15,0.85); }
+
+    /* Logo zone — fixed width so links always start at same spot */
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
+      flex-shrink: 0;
+      padding-right: 32px;
+      margin-right: 8px;
+      border-right: 1px solid var(--border);
+    }
+    .nav-logo-name {
+      font-family: var(--font-h); font-weight: 900; font-size: 1.05rem;
+      letter-spacing: -.5px; color: var(--white);
+    }
     .nav-logo-name span { color: var(--cyan); }
-    .nav-links { display: flex; gap: 28px; list-style: none; }
-    .nav-links a {
-      font-family: var(--font-m); font-size: .68rem; letter-spacing: 1.5px; text-transform: uppercase;
-      color: var(--muted); text-decoration: none; position: relative; transition: color .2s;
+
+    /* Links centered in the remaining space */
+    .nav-links {
+      display: flex; gap: 0; list-style: none;
+      flex: 1;
+      justify-content: center;
     }
-    .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; right: 0; height: 1px; background: var(--cyan); transform: scaleX(0); transform-origin: left; transition: transform .3s; }
+    .nav-links a {
+      font-family: var(--font-m); font-size: .63rem; letter-spacing: 1.4px; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; position: relative; transition: color .2s;
+      padding: 0 14px; height: 64px; display: flex; align-items: center;
+    }
+    nav.sc .nav-links a { height: 52px; }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 14px; right: 14px;
+      height: 2px; background: var(--cyan);
+      transform: scaleX(0); transform-origin: center; transition: transform .28s;
+    }
     .nav-links a:hover { color: var(--cyan); }
     .nav-links a:hover::after { transform: scaleX(1); }
-    .nav-cta { font-family: var(--font-m); font-size: .68rem; letter-spacing: 2px; text-transform: uppercase; padding: 9px 22px; background: transparent; border: 1px solid var(--border2); border-radius: var(--r); color: var(--cyan); cursor: none; text-decoration: none; transition: background .2s, box-shadow .2s; }
-    .nav-cta:hover { background: rgba(34,211,238,0.07); box-shadow: var(--glow-sm); }
+
+    /* Resume button — same style as hero btn-s */
+    .nav-cta-wrap {
+      flex-shrink: 0;
+      padding-left: 28px;
+      margin-left: 8px;
+      border-left: 1px solid var(--border);
+      display: flex; align-items: center;
+    }
+    .nav-cta {
+      padding: 9px 22px;
+      background: transparent;
+      color: var(--off);
+      font-family: var(--font-m); font-size: .63rem; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      border: 1px solid rgba(248,250,255,0.18);
+      border-radius: var(--r);
+      cursor: none; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 7px;
+      transition: border-color .2s, color .2s, transform .2s;
+      white-space: nowrap;
+    }
+    .nav-cta:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-2px); }
 
     section { position: relative; overflow: hidden; z-index: 1; }
 
     /* HERO */
-    #hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 120px 64px 80px; }
-    .hero-badge { font-family: var(--font-m); font-size: .65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); border: 1px solid var(--border2); border-radius: 2px; padding: 6px 18px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 32px; animation: fu .7s .1s both; }
-    .hero-badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); animation: blink 1.5s infinite; }
-    .hero-name { font-family: var(--font-h); font-size: clamp(4rem, 10vw, 8.8rem); font-weight: 900; line-height: .9; letter-spacing: -5px; animation: fu .7s .25s both; }
+    #hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 55% 45%;
+      grid-template-rows: 1fr;
+      align-items: center;
+      padding: 100px 64px 80px;
+      position: relative;
+    }
+    .hero-left { position: relative; z-index: 2; padding-right: 24px; max-width: 100%; overflow: hidden; }
+    .hero-right { position: relative; height: 100vh; min-height: 600px; overflow: hidden; }
+    .hero-right canvas { display: block; }
+    .hero-quote { font-family: var(--font-m); font-size: clamp(.72rem, 1.2vw, .88rem); letter-spacing: 2px; color: var(--muted); margin-bottom: 28px; display: flex; align-items: center; gap: 10px; animation: fu .7s .1s both; }
+    .hero-quote-mark { font-family: var(--font-h); font-size: 1.8rem; color: var(--cyan); line-height: 1; opacity: .7; font-weight: 900; }
+    .hero-name { font-family: var(--font-h); font-size: clamp(2.8rem, 5.8vw, 5.6rem); font-weight: 900; line-height: .92; letter-spacing: -3px; animation: fu .7s .25s both; }
     .hero-name .cyan { color: var(--cyan); display: block; }
     .hero-row { display: flex; align-items: center; gap: 18px; margin-top: 30px; animation: fu .7s .4s both; }
     .hero-line { width: 48px; height: 1px; background: var(--muted); flex-shrink: 0; }
@@ -85,7 +142,7 @@ const G = () => (
     .btn-p:hover { background: var(--cyan2); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(34,211,238,0.28); }
     .btn-s { padding: 13px 32px; background: transparent; color: var(--off); font-family: var(--font-m); font-size: .7rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; border: 1px solid rgba(248,250,255,0.18); border-radius: var(--r); cursor: none; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: border-color .2s, color .2s, transform .2s; }
     .btn-s:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-3px); }
-    .scroll-hint { position: absolute; bottom: 36px; left: 64px; font-family: var(--font-m); font-size: .6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 12px; animation: fu .7s .8s both; }
+    .scroll-hint { position: absolute; bottom: 36px; left: 64px; font-family: var(--font-m); font-size: .6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 12px; animation: fu .7s .8s both; grid-column: 1 / -1; align-self: end; z-index: 3; }
     .scroll-line { width: 36px; height: 1px; background: var(--muted); animation: sp 2s ease-in-out infinite; }
 
     /* COMMON SECTION */
@@ -213,16 +270,19 @@ const G = () => (
     @keyframes sp    { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
     @keyframes pulse { 0%,100% { box-shadow: 0 0 20px rgba(34,211,238,.35); } 50% { box-shadow: 0 0 40px rgba(34,211,238,.7); } }
     @keyframes gridS { from { transform: translateY(0); } to { transform: translateY(64px); } }
-    @keyframes orb   { from { transform: rotate(var(--s)) translateX(var(--r2)) rotate(calc(-1 * var(--s))); } to { transform: rotate(calc(var(--s) + 360deg)) translateX(var(--r2)) rotate(calc(-1 * (var(--s) + 360deg))); } }
 
     .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
     .reveal.in { opacity: 1; transform: none; }
     .d1 { transition-delay: .1s; } .d2 { transition-delay: .2s; } .d3 { transition-delay: .3s; } .d4 { transition-delay: .4s; }
 
     @media (max-width: 1024px) {
-      nav, nav.sc { padding: 14px 24px; }
-      .nav-links, .nav-cta { display: none; }
-      #hero, #about, #education, #experience, #projects, #skills, #certifications, #achievements, #contact { padding-left: 24px; padding-right: 24px; }
+      nav, nav.sc { padding: 0 20px; height: 56px; }
+      .nav-links, .nav-cta-wrap { display: none; }
+      .nav-logo { padding-right: 0; margin-right: 0; border-right: none; }
+      #hero { grid-template-columns: 1fr; padding: 100px 24px 80px; }
+      .hero-right { display: none; }
+      .hero-left { padding-right: 0; }
+      #about, #education, #experience, #projects, #skills, #certifications, #achievements, #contact { padding-left: 24px; padding-right: 24px; }
       .about-g { grid-template-columns: 1fr; }
       .right-col, .edu-g { display: block; }
       .edu-g .edu-c { margin-bottom: 14px; }
@@ -294,34 +354,337 @@ function Logo({ size = 36 }) {
   );
 }
 
-/* ── 3D ORBIT ── */
-function OrbitScene() {
-  const orbs = [
-    { r: "188px", size: 16, color: "#22d3ee", dur: "10s", s: "0deg" },
-    { r: "142px", size: 11, color: "#3b82f6", dur: "7s",  s: "120deg" },
-    { r: "102px", size: 9,  color: "#6366f1", dur: "5s",  s: "240deg" },
-  ];
-  const labels = [
-    { label: "Python",  x: 168, y: 28 },
-    { label: "Go",      x: 316, y: 136 },
-    { label: "React",   x: 44,  y: 208 },
-    { label: "AI/ML",   x: 282, y: 322 },
-    { label: "AWS",     x: 76,  y: 56 },
-    { label: "Node.js", x: 290, y: 60 },
-  ];
+/* ── THREE.JS HERO SCENE ── */
+/* ── THREE.JS HERO SCENE — Solar System ── */
+function HeroThreeScene() {
+  const mountRef = useRef(null);
+  useEffect(() => {
+    const el = mountRef.current;
+    if (!el) return;
+    let animId, cleanupFn;
+
+    const init = (THREE) => {
+      const W = el.clientWidth, H = el.clientHeight;
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(W, H);
+      renderer.setClearColor(0x000000, 0);
+      el.appendChild(renderer.domElement);
+
+      const scene = new THREE.Scene();
+      // Narrow FOV + camera pulled back = less distortion, tighter scene
+      const camera = new THREE.PerspectiveCamera(36, W / H, 0.1, 200);
+      camera.position.set(0, 0, 11);
+
+      // ── Planet group — offset right so it stays in right column ──
+      const planet = new THREE.Group();
+      planet.position.set(0.8, 0, 0); // slight right offset within its own canvas
+      scene.add(planet);
+
+      // 1. Dark planet body
+      const bodyGeo = new THREE.SphereGeometry(0.80, 64, 64);
+      const bodyMat = new THREE.MeshBasicMaterial({ color: 0x071220 });
+      const body = new THREE.Mesh(bodyGeo, bodyMat);
+      planet.add(body);
+
+      // 2. Surface detail — very fine wireframe overlay gives texture
+      const surfGeo = new THREE.IcosahedronGeometry(0.81, 5);
+      const surfMat = new THREE.MeshBasicMaterial({
+        color: 0x0e7a8f, wireframe: true, transparent: true, opacity: 0.12,
+      });
+      planet.add(new THREE.Mesh(surfGeo, surfMat));
+
+      // 3. Thin bright rim / terminator line — sphere slightly larger, show only edge
+      const rimGeo = new THREE.SphereGeometry(0.82, 64, 64);
+      const rimMat = new THREE.MeshBasicMaterial({
+        color: 0x22d3ee, transparent: true, opacity: 0.18, wireframe: false,
+      });
+      planet.add(new THREE.Mesh(rimGeo, rimMat));
+
+      // 4. Inner atmosphere glow (thin shell)
+      const atmo1Geo = new THREE.SphereGeometry(0.90, 32, 32);
+      const atmo1Mat = new THREE.MeshBasicMaterial({ color: 0x22d3ee, transparent: true, opacity: 0.06 });
+      planet.add(new THREE.Mesh(atmo1Geo, atmo1Mat));
+
+      // 5. Outer atmosphere haze
+      const atmo2Geo = new THREE.SphereGeometry(1.05, 32, 32);
+      const atmo2Mat = new THREE.MeshBasicMaterial({ color: 0x0891b2, transparent: true, opacity: 0.03 });
+      planet.add(new THREE.Mesh(atmo2Geo, atmo2Mat));
+
+      // ── Rings group shares the same centre as planet ──
+      const rings = new THREE.Group();
+      rings.position.copy(planet.position);
+      scene.add(rings);
+
+      // Ring definitions — tighter radii, varied tilts for 3D depth
+      const ringDefs = [
+        { rx: 1.55, ry: 0.50, tiltX: 1.25,  tiltY: 0.10,  tiltZ: 0.0,   color: 0x22d3ee, op: 0.55 },
+        { rx: 2.00, ry: 0.65, tiltX: 1.05,  tiltY: 0.50,  tiltZ: 0.15,  color: 0x3b82f6, op: 0.40 },
+        { rx: 2.55, ry: 0.85, tiltX: 1.60,  tiltY: -0.30, tiltZ: 0.30,  color: 0x22d3ee, op: 0.28 },
+        { rx: 3.10, ry: 1.05, tiltX: 0.80,  tiltY: 0.70,  tiltZ: -0.20, color: 0x6366f1, op: 0.20 },
+        { rx: 3.70, ry: 1.30, tiltX: 1.85,  tiltY: -0.50, tiltZ: 0.40,  color: 0x3b82f6, op: 0.14 },
+      ];
+
+      const ellipseMeshes = ringDefs.map(rd => {
+        const pts = [];
+        for (let i = 0; i <= 160; i++) {
+          const θ = (i / 160) * Math.PI * 2;
+          pts.push(new THREE.Vector3(rd.rx * Math.cos(θ), rd.ry * Math.sin(θ), 0));
+        }
+        const geo = new THREE.BufferGeometry().setFromPoints(pts);
+        const mat = new THREE.LineBasicMaterial({ color: rd.color, transparent: true, opacity: rd.op });
+        const ring = new THREE.LineLoop(geo, mat);
+        ring.rotation.set(rd.tiltX, rd.tiltY, rd.tiltZ);
+        rings.add(ring);
+        return ring;
+      });
+
+      // ── Orbiting dots — one per ring ──
+      const dotData = [
+        { size: 0.072, color: 0x22d3ee, speed: 0.60, angle: 0.0 },
+        { size: 0.058, color: 0x3b82f6, speed: 0.42, angle: 2.1 },
+        { size: 0.050, color: 0x22d3ee, speed: 0.30, angle: 3.9 },
+        { size: 0.042, color: 0x6366f1, speed: 0.22, angle: 1.3 },
+        { size: 0.036, color: 0x3b82f6, speed: 0.16, angle: 4.7 },
+      ];
+
+      const orbitDots = ringDefs.map((rd, i) => {
+        const d = dotData[i];
+        const g = new THREE.SphereGeometry(d.size, 10, 10);
+        const m = new THREE.MeshBasicMaterial({ color: d.color });
+        const dot = new THREE.Mesh(g, m);
+        // Dots added to scene (not rings group) so position is in world space
+        scene.add(dot);
+        return { dot, rd, angle: d.angle, speed: d.speed };
+      });
+
+      // ── Starfield ──
+      const starCount = 300;
+      const sp = new Float32Array(starCount * 3);
+      for (let i = 0; i < starCount; i++) {
+        const θ = Math.random() * Math.PI * 2;
+        const φ = Math.acos(2 * Math.random() - 1);
+        const r = 8 + Math.random() * 7;
+        sp[i*3]   = r * Math.sin(φ) * Math.cos(θ);
+        sp[i*3+1] = r * Math.sin(φ) * Math.sin(θ);
+        sp[i*3+2] = r * Math.cos(φ);
+      }
+      const sGeo = new THREE.BufferGeometry();
+      sGeo.setAttribute("position", new THREE.BufferAttribute(sp, 3));
+      const sMat = new THREE.PointsMaterial({ color: 0x22d3ee, size: 0.022, transparent: true, opacity: 0.50 });
+      const stars = new THREE.Points(sGeo, sMat);
+      scene.add(stars);
+
+      // ── Mouse parallax ──
+      let mx = 0, my = 0;
+      const onMouse = e => {
+        mx = (e.clientX / window.innerWidth  - 0.5) * 2;
+        my = (e.clientY / window.innerHeight - 0.5) * 2;
+      };
+      window.addEventListener("mousemove", onMouse);
+
+      const onResize = () => {
+        const w = el.clientWidth, h = el.clientHeight;
+        camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
+      };
+      window.addEventListener("resize", onResize);
+
+      const animate = () => {
+        animId = requestAnimationFrame(animate);
+
+        // Mouse tilt on entire scene
+        scene.rotation.y += (mx * 0.14 - scene.rotation.y) * 0.032;
+        scene.rotation.x += (-my * 0.08 - scene.rotation.x) * 0.032;
+
+        // Planet slow self-rotation
+        body.rotation.y += 0.003;
+        surfGeo && (planet.children[1].rotation.y += 0.002);
+
+        // Stars slow drift
+        stars.rotation.y += 0.0004;
+
+        // Orbit dots follow their ellipse
+        orbitDots.forEach(od => {
+          od.angle += od.speed * 0.008;
+          const lx = od.rd.rx * Math.cos(od.angle);
+          const ly = od.rd.ry * Math.sin(od.angle);
+          const v = new THREE.Vector3(lx, ly, 0);
+          v.applyEuler(new THREE.Euler(od.rd.tiltX, od.rd.tiltY, od.rd.tiltZ));
+          // Offset by planet position + scene rotation handled by scene group
+          od.dot.position.set(
+            v.x + planet.position.x,
+            v.y + planet.position.y,
+            v.z + planet.position.z
+          );
+        });
+
+        renderer.render(scene, camera);
+      };
+      animate();
+
+      return () => {
+        cancelAnimationFrame(animId);
+        window.removeEventListener("mousemove", onMouse);
+        window.removeEventListener("resize", onResize);
+        renderer.dispose();
+        if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
+      };
+    };
+
+    if (window.THREE) {
+      cleanupFn = init(window.THREE);
+      return () => cleanupFn && cleanupFn();
+    }
+    const script = document.createElement("script");
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+    script.onload = () => { cleanupFn = init(window.THREE); };
+    document.head.appendChild(script);
+    return () => { cancelAnimationFrame(animId); cleanupFn && cleanupFn(); };
+  }, []);
+
   return (
-    <div style={{ position: "absolute", right: "7vw", top: "50%", transform: "translateY(-52%)", width: 420, height: 420, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1 }}>
-      {[380, 284, 204, 136].map((s, i) => (
-        <div key={i} style={{ position: "absolute", width: s, height: s, borderRadius: "50%", border: `1px solid rgba(34,211,238,${.05 + i * .022})` }} />
-      ))}
-      <div style={{ position: "absolute", width: 64, height: 64, borderRadius: "50%", background: "radial-gradient(circle at 35% 35%, #22d3ee 0%, #0a4a5a 42%, #020812 100%)", animation: "pulse 3s ease-in-out infinite" }} />
-      {orbs.map((o, i) => (
-        <div key={i} style={{ position: "absolute", width: o.size, height: o.size, borderRadius: "50%", background: `radial-gradient(circle at 30% 30%, ${o.color}, transparent)`, boxShadow: `0 0 14px ${o.color}88`, animationName: "orb", animationDuration: o.dur, animationTimingFunction: "linear", animationIterationCount: "infinite", "--s": o.s, "--r2": o.r }} />
-      ))}
-      {labels.map((l, i) => (
-        <div key={i} style={{ position: "absolute", left: l.x, top: l.y, fontFamily: "var(--font-m)", fontSize: ".58rem", letterSpacing: "1px", padding: "4px 10px", border: "1px solid rgba(34,211,238,0.18)", borderRadius: "2px", color: "rgba(34,211,238,0.65)", background: "rgba(4,6,15,0.82)", backdropFilter: "blur(8px)" }}>{l.label}</div>
-      ))}
-    </div>
+    <div ref={mountRef} style={{
+      width: "100%", height: "100%",
+      position: "absolute", inset: 0,
+      zIndex: 1, pointerEvents: "none",
+    }} />
+  );
+}
+
+/* ── THREE.JS SKILLS BACKGROUND ── */
+function SkillsThreeScene() {
+  const mountRef = useRef(null);
+  useEffect(() => {
+    const el = mountRef.current;
+    if (!el) return;
+    let animId;
+
+    const init = (THREE) => {
+      const W = el.clientWidth, H = el.clientHeight;
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(W, H);
+      renderer.setClearColor(0x000000, 0);
+      el.appendChild(renderer.domElement);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 100);
+      camera.position.set(0, 0, 5);
+
+      // Torus knot
+      const tkGeo = new THREE.TorusKnotGeometry(1.6, 0.35, 160, 12, 2, 3);
+      const tkMat = new THREE.MeshBasicMaterial({
+        color: 0x22d3ee, wireframe: true, transparent: true, opacity: 0.13,
+      });
+      const tk = new THREE.Mesh(tkGeo, tkMat);
+      scene.add(tk);
+
+      // Second outer ring
+      const rGeo = new THREE.TorusGeometry(2.8, 0.005, 2, 140);
+      const rMat = new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.18 });
+      const ring = new THREE.Mesh(rGeo, rMat);
+      ring.rotation.x = Math.PI / 4;
+      scene.add(ring);
+
+      const onResize = () => {
+        const w = el.clientWidth, h = el.clientHeight;
+        camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
+      };
+      window.addEventListener("resize", onResize);
+
+      const animate = () => {
+        animId = requestAnimationFrame(animate);
+        tk.rotation.x += 0.004;
+        tk.rotation.y += 0.006;
+        ring.rotation.z += 0.003;
+        renderer.render(scene, camera);
+      };
+      animate();
+
+      return () => {
+        cancelAnimationFrame(animId);
+        window.removeEventListener("resize", onResize);
+        renderer.dispose();
+        if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
+      };
+    };
+
+    if (window.THREE) { const c = init(window.THREE); return c; }
+    // Three.js already loaded by HeroThreeScene, wait briefly
+    const t = setTimeout(() => { if (window.THREE) init(window.THREE); }, 1500);
+    return () => { clearTimeout(t); cancelAnimationFrame(animId); };
+  }, []);
+
+  return (
+    <div ref={mountRef} style={{
+      position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none", opacity: 0.7,
+    }} />
+  );
+}
+
+/* ── THREE.JS CONTACT SCENE ── */
+function ContactThreeScene() {
+  const mountRef = useRef(null);
+  useEffect(() => {
+    const el = mountRef.current;
+    if (!el) return;
+    let animId;
+
+    const init = (THREE) => {
+      const W = el.clientWidth, H = el.clientHeight;
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(W, H);
+      renderer.setClearColor(0x000000, 0);
+      el.appendChild(renderer.domElement);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 100);
+      camera.position.set(0, 0, 6);
+
+      // Icosahedron with different detail
+      const geo = new THREE.IcosahedronGeometry(2.2, 2);
+      const mat = new THREE.MeshBasicMaterial({
+        color: 0x22d3ee, wireframe: true, transparent: true, opacity: 0.09,
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      scene.add(mesh);
+
+      const geo2 = new THREE.OctahedronGeometry(3, 0);
+      const mat2 = new THREE.MeshBasicMaterial({ color: 0x6366f1, wireframe: true, transparent: true, opacity: 0.07 });
+      const mesh2 = new THREE.Mesh(geo2, mat2);
+      scene.add(mesh2);
+
+      const onResize = () => {
+        const w = el.clientWidth, h = el.clientHeight;
+        camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
+      };
+      window.addEventListener("resize", onResize);
+
+      const animate = () => {
+        animId = requestAnimationFrame(animate);
+        mesh.rotation.x  += 0.003; mesh.rotation.y  += 0.005;
+        mesh2.rotation.x -= 0.002; mesh2.rotation.y -= 0.004;
+        renderer.render(scene, camera);
+      };
+      animate();
+
+      return () => {
+        cancelAnimationFrame(animId);
+        window.removeEventListener("resize", onResize);
+        renderer.dispose();
+        if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
+      };
+    };
+
+    const t = setTimeout(() => { if (window.THREE) init(window.THREE); }, 2000);
+    return () => { clearTimeout(t); cancelAnimationFrame(animId); };
+  }, []);
+
+  return (
+    <div ref={mountRef} style={{
+      position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none", opacity: 0.8,
+    }} />
   );
 }
 
@@ -460,14 +823,22 @@ export default function App() {
             <li key={s}><a href={`#${s.toLowerCase()}`}>{s}</a></li>
           ))}
         </ul>
-        <a href="https://drive.google.com/your-resume-link" target="_blank" rel="noopener noreferrer" className="nav-cta">Resume</a>
+        <div className="nav-cta-wrap">
+          <a href="https://drive.google.com/your-resume-link" target="_blank" rel="noopener noreferrer" className="nav-cta">
+            {DOC_ICON} Resume
+          </a>
+        </div>
       </nav>
 
       {/* HERO */}
       <section id="hero">
-        <OrbitScene />
-        <div style={{ position: "relative", zIndex: 2 }}>
-          <div className="hero-badge">Available for Opportunities</div>
+        {/* LEFT — text content */}
+        <div className="hero-left">
+          <div className="hero-quote">
+            <span className="hero-quote-mark">"</span>
+            Code is the closest thing we have to a superpower.
+            <span className="hero-quote-mark">"</span>
+          </div>
           <h1 className="hero-name">Arya<span className="cyan">Wadhwani</span></h1>
           <div className="hero-row">
             <div className="hero-line" />
@@ -479,6 +850,12 @@ export default function App() {
             <a href="https://drive.google.com/your-resume-link" target="_blank" rel="noopener noreferrer" className="btn-s">{DOC_ICON} Resume</a>
           </div>
         </div>
+
+        {/* RIGHT — Three.js canvas, fully isolated */}
+        <div className="hero-right">
+          <HeroThreeScene />
+        </div>
+
         <div className="scroll-hint"><div className="scroll-line" />Scroll to explore</div>
       </section>
 
@@ -595,7 +972,8 @@ export default function App() {
       </section>
 
       {/* SKILLS */}
-      <section id="skills" style={{ padding:"100px 64px" }}>
+      <section id="skills" style={{ padding:"100px 64px", position: "relative" }}>
+        <SkillsThreeScene />
         <div className="sw">
           <div className="sl reveal">Skills</div>
           <h2 className="st reveal d1">Technical Arsenal</h2>
@@ -648,6 +1026,7 @@ export default function App() {
 
       {/* CONTACT */}
       <section id="contact" style={{ padding:"120px 64px" }}>
+        <ContactThreeScene />
         <div className="cglow" />
         <div className="ci">
           <div className="sl reveal" style={{ justifyContent:"center" }}>Contact</div>
@@ -667,7 +1046,7 @@ export default function App() {
       </section>
 
       <footer>
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginBottom:10 }}><Logo size={20} /><span style={{ color:"var(--cyan)", fontFamily:"var(--font-h)", fontWeight:800, fontSize:".9rem", letterSpacing:"-.3px" }}>Arya Wadhwani</span></div>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginBottom:10 }}><Logo size={20} /><span style={{ color:"var(--cyan)", fontFamily:"var(--font-h)", fontWeight:800, fontSize:".9rem", letterSpacing:"-.3px" }}>Arya Jay Wadhwani</span></div>
         Built with React &nbsp;·&nbsp; {new Date().getFullYear()}
         <div style={{ opacity:.4, fontSize:".58rem", marginTop:6, letterSpacing:3 }}>// designed to ship. built to scale.</div>
       </footer>
