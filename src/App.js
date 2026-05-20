@@ -824,7 +824,7 @@ export default function App() {
           ))}
         </ul>
         <div className="nav-cta-wrap">
-          <a href="https://drive.google.com/your-resume-link" target="_blank" rel="noopener noreferrer" className="nav-cta">
+          <a href="https://drive.google.com/file/d/1Js6neIJHplt8gGNjkJ_x_3yx07uOgKjJ/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="nav-cta">
             {DOC_ICON} Resume
           </a>
         </div>
@@ -847,7 +847,7 @@ export default function App() {
           <div className="hero-cta">
             <a href="#projects" className="btn-p">View Projects ↗</a>
             <a href="#contact"  className="btn-s">Get In Touch</a>
-            <a href="https://drive.google.com/your-resume-link" target="_blank" rel="noopener noreferrer" className="btn-s">{DOC_ICON} Resume</a>
+            <a href="https://drive.google.com/file/d/1Js6neIJHplt8gGNjkJ_x_3yx07uOgKjJ/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="btn-s">{DOC_ICON} Resume</a>
           </div>
         </div>
 
@@ -1040,7 +1040,7 @@ export default function App() {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.15 2.28 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.91-.91a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
               (213) 296-4961
             </a>
-            <a href="https://drive.google.com/your-resume-link" target="_blank" rel="noopener noreferrer" className="clk">{DOC_ICON} Resume</a>
+            <a href="https://drive.google.com/file/d/1Js6neIJHplt8gGNjkJ_x_3yx07uOgKjJ/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="clk">{DOC_ICON} Resume</a>
           </div>
         </div>
       </section>
