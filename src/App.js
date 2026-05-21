@@ -125,10 +125,16 @@ const G = () => (
       align-items: center;
       padding: 100px 64px 80px;
       position: relative;
+      overflow: hidden;
     }
-    .hero-left { position: relative; z-index: 2; padding-right: 24px; max-width: 100%; overflow: hidden; }
-    .hero-right { position: relative; height: 100vh; min-height: 600px; overflow: hidden; }
-    .hero-right canvas { display: block; }
+    .hero-left { position: relative; z-index: 2; padding-right: 24px; }
+    .hero-right {
+      position: relative; height: 100vh; min-height: 600px;
+      overflow: hidden;
+      /* Hard clip — nothing escapes this box */
+      clip-path: inset(0);
+    }
+    .hero-right canvas { display: block; width: 100% !important; height: 100% !important; }
     .hero-quote { font-family: var(--font-m); font-size: clamp(.72rem, 1.2vw, .88rem); letter-spacing: 2px; color: var(--muted); margin-bottom: 28px; display: flex; align-items: center; gap: 10px; animation: fu .7s .1s both; }
     .hero-quote-mark { font-family: var(--font-h); font-size: 1.8rem; color: var(--cyan); line-height: 1; opacity: .7; font-weight: 900; }
     .hero-name { font-family: var(--font-h); font-size: clamp(2.8rem, 5.8vw, 5.6rem); font-weight: 900; line-height: .92; letter-spacing: -3px; animation: fu .7s .25s both; }
@@ -355,16 +361,19 @@ function Logo({ size = 36 }) {
 }
 
 /* ── THREE.JS HERO SCENE ── */
-/* ── THREE.JS HERO SCENE — Solar System ── */
 function HeroThreeScene() {
   const mountRef = useRef(null);
+
   useEffect(() => {
     const el = mountRef.current;
     if (!el) return;
     let animId, cleanupFn;
 
     const init = (THREE) => {
-      const W = el.clientWidth, H = el.clientHeight;
+      // Always read size fresh after mount
+      const W = el.offsetWidth || el.clientWidth || 600;
+      const H = el.offsetHeight || el.clientHeight || 800;
+
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setSize(W, H);
@@ -372,150 +381,190 @@ function HeroThreeScene() {
       el.appendChild(renderer.domElement);
 
       const scene = new THREE.Scene();
-      // Narrow FOV + camera pulled back = less distortion, tighter scene
-      const camera = new THREE.PerspectiveCamera(36, W / H, 0.1, 200);
-      camera.position.set(0, 0, 11);
 
-      // ── Planet group — offset right so it stays in right column ──
-      const planet = new THREE.Group();
-      planet.position.set(0.8, 0, 0); // slight right offset within its own canvas
-      scene.add(planet);
+      // Camera: fixed square-ish FOV, position based on scene units
+      const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 500);
+      camera.position.set(0, 2, 10);
+      camera.lookAt(0, 0, 0);
 
-      // 1. Dark planet body
-      const bodyGeo = new THREE.SphereGeometry(0.80, 64, 64);
-      const bodyMat = new THREE.MeshBasicMaterial({ color: 0x071220 });
-      const body = new THREE.Mesh(bodyGeo, bodyMat);
-      planet.add(body);
+      // ── Master group: everything lives here ──
+      const master = new THREE.Group();
+      scene.add(master);
 
-      // 2. Surface detail — very fine wireframe overlay gives texture
-      const surfGeo = new THREE.IcosahedronGeometry(0.81, 5);
-      const surfMat = new THREE.MeshBasicMaterial({
-        color: 0x0e7a8f, wireframe: true, transparent: true, opacity: 0.12,
+      // ─────────────────────────────────────────
+      // PLANET — layered realistic sphere
+      // ─────────────────────────────────────────
+      // 1. Solid dark core
+      const coreGeo = new THREE.SphereGeometry(1.2, 64, 64);
+      const coreMat = new THREE.MeshBasicMaterial({ color: 0x04111e });
+      master.add(new THREE.Mesh(coreGeo, coreMat));
+
+      // 2. Latitude/longitude grid lines for texture
+      const gridGeo = new THREE.SphereGeometry(1.22, 18, 12);
+      const gridMat = new THREE.MeshBasicMaterial({
+        color: 0x0e8fa8, wireframe: true, transparent: true, opacity: 0.10,
       });
-      planet.add(new THREE.Mesh(surfGeo, surfMat));
+      master.add(new THREE.Mesh(gridGeo, gridMat));
 
-      // 3. Thin bright rim / terminator line — sphere slightly larger, show only edge
-      const rimGeo = new THREE.SphereGeometry(0.82, 64, 64);
+      // 3. Cyan rim glow — thin shell rendered with backside only for edge effect
+      const rimGeo = new THREE.SphereGeometry(1.28, 64, 64);
       const rimMat = new THREE.MeshBasicMaterial({
-        color: 0x22d3ee, transparent: true, opacity: 0.18, wireframe: false,
+        color: 0x22d3ee, transparent: true, opacity: 0.13, side: THREE.BackSide,
       });
-      planet.add(new THREE.Mesh(rimGeo, rimMat));
+      master.add(new THREE.Mesh(rimGeo, rimMat));
 
-      // 4. Inner atmosphere glow (thin shell)
-      const atmo1Geo = new THREE.SphereGeometry(0.90, 32, 32);
-      const atmo1Mat = new THREE.MeshBasicMaterial({ color: 0x22d3ee, transparent: true, opacity: 0.06 });
-      planet.add(new THREE.Mesh(atmo1Geo, atmo1Mat));
+      // 4. Inner atmosphere
+      const atmoGeo = new THREE.SphereGeometry(1.38, 32, 32);
+      const atmoMat = new THREE.MeshBasicMaterial({
+        color: 0x22d3ee, transparent: true, opacity: 0.05,
+      });
+      master.add(new THREE.Mesh(atmoGeo, atmoMat));
 
-      // 5. Outer atmosphere haze
-      const atmo2Geo = new THREE.SphereGeometry(1.05, 32, 32);
-      const atmo2Mat = new THREE.MeshBasicMaterial({ color: 0x0891b2, transparent: true, opacity: 0.03 });
-      planet.add(new THREE.Mesh(atmo2Geo, atmo2Mat));
+      // 5. Outer haze
+      const hazeGeo = new THREE.SphereGeometry(1.55, 32, 32);
+      const hazeMat = new THREE.MeshBasicMaterial({
+        color: 0x0891b2, transparent: true, opacity: 0.025,
+      });
+      master.add(new THREE.Mesh(hazeGeo, hazeMat));
 
-      // ── Rings group shares the same centre as planet ──
-      const rings = new THREE.Group();
-      rings.position.copy(planet.position);
-      scene.add(rings);
-
-      // Ring definitions — tighter radii, varied tilts for 3D depth
-      const ringDefs = [
-        { rx: 1.55, ry: 0.50, tiltX: 1.25,  tiltY: 0.10,  tiltZ: 0.0,   color: 0x22d3ee, op: 0.55 },
-        { rx: 2.00, ry: 0.65, tiltX: 1.05,  tiltY: 0.50,  tiltZ: 0.15,  color: 0x3b82f6, op: 0.40 },
-        { rx: 2.55, ry: 0.85, tiltX: 1.60,  tiltY: -0.30, tiltZ: 0.30,  color: 0x22d3ee, op: 0.28 },
-        { rx: 3.10, ry: 1.05, tiltX: 0.80,  tiltY: 0.70,  tiltZ: -0.20, color: 0x6366f1, op: 0.20 },
-        { rx: 3.70, ry: 1.30, tiltX: 1.85,  tiltY: -0.50, tiltZ: 0.40,  color: 0x3b82f6, op: 0.14 },
-      ];
-
-      const ellipseMeshes = ringDefs.map(rd => {
+      // ─────────────────────────────────────────
+      // ORBIT RINGS — true circles (r, r), tilted via euler
+      // Each ring tilted so they fan out as a beautiful orrery
+      // ─────────────────────────────────────────
+      const makeCircle = (r, color, opacity) => {
         const pts = [];
-        for (let i = 0; i <= 160; i++) {
-          const θ = (i / 160) * Math.PI * 2;
-          pts.push(new THREE.Vector3(rd.rx * Math.cos(θ), rd.ry * Math.sin(θ), 0));
+        const SEG = 200;
+        for (let i = 0; i <= SEG; i++) {
+          const a = (i / SEG) * Math.PI * 2;
+          pts.push(new THREE.Vector3(r * Math.cos(a), 0, r * Math.sin(a)));
         }
         const geo = new THREE.BufferGeometry().setFromPoints(pts);
-        const mat = new THREE.LineBasicMaterial({ color: rd.color, transparent: true, opacity: rd.op });
-        const ring = new THREE.LineLoop(geo, mat);
-        ring.rotation.set(rd.tiltX, rd.tiltY, rd.tiltZ);
-        rings.add(ring);
+        const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity });
+        return new THREE.LineLoop(geo, mat);
+      };
+
+      // Orbit definitions: [radius, tiltX (pitch), tiltZ (roll), color, opacity]
+      const orbitDefs = [
+        { r: 2.0,  tiltX:  0.25, tiltZ:  0.0,  color: 0x22d3ee, op: 0.70 },
+        { r: 2.8,  tiltX: -0.55, tiltZ:  0.3,  color: 0x3b82f6, op: 0.55 },
+        { r: 3.6,  tiltX:  0.80, tiltZ: -0.4,  color: 0x22d3ee, op: 0.38 },
+        { r: 4.5,  tiltX: -0.30, tiltZ:  0.6,  color: 0x6366f1, op: 0.28 },
+        { r: 5.4,  tiltX:  1.10, tiltZ: -0.2,  color: 0x3b82f6, op: 0.18 },
+      ];
+
+      const orbitRings = orbitDefs.map(od => {
+        const ring = makeCircle(od.r, od.color, od.op);
+        ring.rotation.x = od.tiltX;
+        ring.rotation.z = od.tiltZ;
+        master.add(ring);
         return ring;
       });
 
-      // ── Orbiting dots — one per ring ──
-      const dotData = [
-        { size: 0.072, color: 0x22d3ee, speed: 0.60, angle: 0.0 },
-        { size: 0.058, color: 0x3b82f6, speed: 0.42, angle: 2.1 },
-        { size: 0.050, color: 0x22d3ee, speed: 0.30, angle: 3.9 },
-        { size: 0.042, color: 0x6366f1, speed: 0.22, angle: 1.3 },
-        { size: 0.036, color: 0x3b82f6, speed: 0.16, angle: 4.7 },
+      // ─────────────────────────────────────────
+      // ORBITING DOTS — travel in local ring space → world space
+      // ─────────────────────────────────────────
+      const dotDefs = [
+        { size: 0.10, color: 0x22d3ee, speed: 0.55, phase: 0.0   },
+        { size: 0.08, color: 0x3b82f6, speed: 0.38, phase: 2.0   },
+        { size: 0.07, color: 0x22d3ee, speed: 0.27, phase: 4.0   },
+        { size: 0.06, color: 0x6366f1, speed: 0.19, phase: 1.2   },
+        { size: 0.05, color: 0x3b82f6, speed: 0.13, phase: 3.5   },
       ];
 
-      const orbitDots = ringDefs.map((rd, i) => {
-        const d = dotData[i];
-        const g = new THREE.SphereGeometry(d.size, 10, 10);
-        const m = new THREE.MeshBasicMaterial({ color: d.color });
-        const dot = new THREE.Mesh(g, m);
-        // Dots added to scene (not rings group) so position is in world space
-        scene.add(dot);
-        return { dot, rd, angle: d.angle, speed: d.speed };
+      const orbitDots = orbitDefs.map((od, i) => {
+        const dd = dotDefs[i];
+        const geo = new THREE.SphereGeometry(dd.size, 12, 12);
+        const mat = new THREE.MeshBasicMaterial({ color: dd.color });
+        const dot = new THREE.Mesh(geo, mat);
+        scene.add(dot); // world-space so we manually compute position
+        return {
+          dot,
+          r: od.r,
+          tiltX: od.tiltX,
+          tiltZ: od.tiltZ,
+          speed: dd.speed,
+          angle: dd.phase,
+        };
       });
 
-      // ── Starfield ──
-      const starCount = 300;
-      const sp = new Float32Array(starCount * 3);
-      for (let i = 0; i < starCount; i++) {
-        const θ = Math.random() * Math.PI * 2;
-        const φ = Math.acos(2 * Math.random() - 1);
-        const r = 8 + Math.random() * 7;
-        sp[i*3]   = r * Math.sin(φ) * Math.cos(θ);
-        sp[i*3+1] = r * Math.sin(φ) * Math.sin(θ);
-        sp[i*3+2] = r * Math.cos(φ);
+      // ─────────────────────────────────────────
+      // STARFIELD
+      // ─────────────────────────────────────────
+      const STARS = 320;
+      const starPos = new Float32Array(STARS * 3);
+      for (let i = 0; i < STARS; i++) {
+        const theta = Math.random() * Math.PI * 2;
+        const phi   = Math.acos(2 * Math.random() - 1);
+        const r     = 12 + Math.random() * 10;
+        starPos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+        starPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+        starPos[i*3+2] = r * Math.cos(phi);
       }
-      const sGeo = new THREE.BufferGeometry();
-      sGeo.setAttribute("position", new THREE.BufferAttribute(sp, 3));
-      const sMat = new THREE.PointsMaterial({ color: 0x22d3ee, size: 0.022, transparent: true, opacity: 0.50 });
-      const stars = new THREE.Points(sGeo, sMat);
+      const starGeo = new THREE.BufferGeometry();
+      starGeo.setAttribute("position", new THREE.BufferAttribute(starPos, 3));
+      const starMat = new THREE.PointsMaterial({
+        color: 0x22d3ee, size: 0.03, transparent: true, opacity: 0.55,
+      });
+      const stars = new THREE.Points(starGeo, starMat);
       scene.add(stars);
 
-      // ── Mouse parallax ──
-      let mx = 0, my = 0;
+      // ─────────────────────────────────────────
+      // MOUSE PARALLAX
+      // ─────────────────────────────────────────
+      let targetRY = 0, targetRX = 0;
       const onMouse = e => {
-        mx = (e.clientX / window.innerWidth  - 0.5) * 2;
-        my = (e.clientY / window.innerHeight - 0.5) * 2;
+        targetRY = ((e.clientX / window.innerWidth)  - 0.5) * 0.5;
+        targetRX = ((e.clientY / window.innerHeight) - 0.5) * 0.3;
       };
       window.addEventListener("mousemove", onMouse);
 
+      // ─────────────────────────────────────────
+      // RESIZE
+      // ─────────────────────────────────────────
       const onResize = () => {
-        const w = el.clientWidth, h = el.clientHeight;
-        camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
+        const w = el.offsetWidth, h = el.offsetHeight;
+        if (!w || !h) return;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
       };
       window.addEventListener("resize", onResize);
+
+      // ─────────────────────────────────────────
+      // ANIMATE
+      // ─────────────────────────────────────────
+      const _euler = new THREE.Euler();
+      const _vec   = new THREE.Vector3();
 
       const animate = () => {
         animId = requestAnimationFrame(animate);
 
-        // Mouse tilt on entire scene
-        scene.rotation.y += (mx * 0.14 - scene.rotation.y) * 0.032;
-        scene.rotation.x += (-my * 0.08 - scene.rotation.x) * 0.032;
+        // Smooth mouse parallax on master group
+        master.rotation.y += (targetRY - master.rotation.y) * 0.04;
+        master.rotation.x += (-targetRX - master.rotation.x) * 0.04;
 
-        // Planet slow self-rotation
-        body.rotation.y += 0.003;
-        surfGeo && (planet.children[1].rotation.y += 0.002);
+        // Slow planet self-spin (child index 0 = core)
+        master.children[0].rotation.y += 0.0025;
+        master.children[1].rotation.y += 0.0015; // grid slightly different speed
 
-        // Stars slow drift
-        stars.rotation.y += 0.0004;
+        // Stars drift
+        stars.rotation.y += 0.0003;
 
-        // Orbit dots follow their ellipse
+        // Orbit dots — compute world-space position from ring's local circle
         orbitDots.forEach(od => {
-          od.angle += od.speed * 0.008;
-          const lx = od.rd.rx * Math.cos(od.angle);
-          const ly = od.rd.ry * Math.sin(od.angle);
-          const v = new THREE.Vector3(lx, ly, 0);
-          v.applyEuler(new THREE.Euler(od.rd.tiltX, od.rd.tiltY, od.rd.tiltZ));
-          // Offset by planet position + scene rotation handled by scene group
-          od.dot.position.set(
-            v.x + planet.position.x,
-            v.y + planet.position.y,
-            v.z + planet.position.z
-          );
+          od.angle += od.speed * 0.009;
+          // Local position on the circle (in the ring's XZ plane before tilt)
+          const lx = od.r * Math.cos(od.angle);
+          const lz = od.r * Math.sin(od.angle);
+
+          // Apply the same tilt as the ring (tiltX, tiltZ) via euler
+          _euler.set(od.tiltX, 0, od.tiltZ);
+          _vec.set(lx, 0, lz).applyEuler(_euler);
+
+          // Then apply master group rotation to dot so it tracks correctly
+          _vec.applyEuler(master.rotation);
+
+          od.dot.position.copy(_vec);
         });
 
         renderer.render(scene, camera);
@@ -532,12 +581,15 @@ function HeroThreeScene() {
     };
 
     if (window.THREE) {
-      cleanupFn = init(window.THREE);
-      return () => cleanupFn && cleanupFn();
+      // Defer one frame so hero-right is fully laid out before reading dimensions
+      const raf = requestAnimationFrame(() => { cleanupFn = init(window.THREE); });
+      return () => { cancelAnimationFrame(raf); cleanupFn && cleanupFn(); };
     }
     const script = document.createElement("script");
     script.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
-    script.onload = () => { cleanupFn = init(window.THREE); };
+    script.onload = () => {
+      requestAnimationFrame(() => { cleanupFn = init(window.THREE); });
+    };
     document.head.appendChild(script);
     return () => { cancelAnimationFrame(animId); cleanupFn && cleanupFn(); };
   }, []);
@@ -805,6 +857,29 @@ const DOC_ICON = <svg width="13" height="13" viewBox="0 0 24 24" fill="none" str
 /* ── APP ── */
 export default function App() {
   useReveal(); useNavScroll();
+
+  // Browser tab title + favicon
+  useEffect(() => {
+    document.title = "Arya Wadhwani | Portfolio";
+    // Inline SVG favicon — hexagon logo matching the site logo
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#22d3ee"/><stop offset="1" stop-color="#3b82f6"/>
+        </linearGradient>
+      </defs>
+      <rect width="60" height="60" rx="12" fill="#04060f"/>
+      <path d="M30 4L54 17.5V42.5L30 56L6 42.5V17.5L30 4Z" stroke="url(#g)" stroke-width="1.5" fill="rgba(34,211,238,0.08)"/>
+      <path d="M22 43L30 18L38 43" stroke="url(#g)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <line x1="25" y1="36" x2="35" y2="36" stroke="url(#g)" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="30" cy="18" r="2.5" fill="#22d3ee"/>
+    </svg>`;
+    const link = document.querySelector("link[rel*='icon']") || document.createElement("link");
+    link.type = "image/svg+xml";
+    link.rel = "icon";
+    link.href = "data:image/svg+xml;base64," + btoa(svg);
+    document.head.appendChild(link);
+  }, []);
   return (
     <>
       <G />
@@ -824,7 +899,7 @@ export default function App() {
           ))}
         </ul>
         <div className="nav-cta-wrap">
-          <a href="https://drive.google.com/file/d/1Js6neIJHplt8gGNjkJ_x_3yx07uOgKjJ/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="nav-cta">
+          <a href="https://drive.google.com/your-resume-link" target="_blank" rel="noopener noreferrer" className="nav-cta">
             {DOC_ICON} Resume
           </a>
         </div>
@@ -847,7 +922,7 @@ export default function App() {
           <div className="hero-cta">
             <a href="#projects" className="btn-p">View Projects ↗</a>
             <a href="#contact"  className="btn-s">Get In Touch</a>
-            <a href="https://drive.google.com/file/d/1Js6neIJHplt8gGNjkJ_x_3yx07uOgKjJ/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="btn-s">{DOC_ICON} Resume</a>
+            <a href="https://drive.google.com/your-resume-link" target="_blank" rel="noopener noreferrer" className="btn-s">{DOC_ICON} Resume</a>
           </div>
         </div>
 
@@ -876,12 +951,19 @@ export default function App() {
               </div>
             </div>
             <div className="right-col">
-              {/* PHOTO PLACEHOLDER */}
-              <div className="photo-ph reveal d1">
-                <div className="photo-ring">
-                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="rgba(34,211,238,0.45)" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                </div>
-                <div className="photo-lbl">YOUR PROFESSIONAL PHOTO<br /><span style={{ opacity:.45, fontSize:".55rem" }}>Upload to replace this placeholder</span></div>
+              {/* PHOTO */}
+              <div className="photo-ph reveal d1" style={{ padding: 0, border: "none", background: "none" }}>
+                <img
+                  src="/arya_portrait.png"
+                  alt="Arya Wadhwani at Hewlett Packard Enterprise"
+                  style={{
+                    width: "100%", height: "100%", objectFit: "cover",
+                    borderRadius: "var(--r)",
+                    border: "2px solid rgba(34,211,238,0.3)",
+                    boxShadow: "0 0 40px rgba(34,211,238,0.12), 0 0 80px rgba(34,211,238,0.06)",
+                    display: "block",
+                  }}
+                />
               </div>
               {/* TERMINAL */}
               <div className="term-card reveal d2">
@@ -1040,7 +1122,7 @@ export default function App() {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.15 2.28 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.91-.91a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
               (213) 296-4961
             </a>
-            <a href="https://drive.google.com/file/d/1Js6neIJHplt8gGNjkJ_x_3yx07uOgKjJ/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="clk">{DOC_ICON} Resume</a>
+            <a href="https://drive.google.com/your-resume-link" target="_blank" rel="noopener noreferrer" className="clk">{DOC_ICON} Resume</a>
           </div>
         </div>
       </section>
