@@ -1079,37 +1079,76 @@ function useNavScroll() {
 /* ── DATA ── */
 const EXP = [
   {
-    role: "Software / Systems Engineer I", company: "Hewlett Packard Enterprise", period: "Feb 2024 – Jul 2025 · Bangalore", color: "#22d3ee",
-    pts: ["Designed integration tests to validate <strong>Fibre Channel I/O</strong> for block sizes greater than 256 KB, improving reliability in enterprise storage arrays.", "Built a <strong>Python automation framework</strong> for hardware self-installation workflows, reducing replacement runtime by approximately <strong>50%</strong>.", "Developed backend APIs and monitoring dashboards to scale distributed storage clusters from <strong>8 to 16 nodes</strong>, enabling real-time visibility for 6 PB+ deployments.", "Proactively shipped a <strong>GPT-3.5 powered internal chatbot</strong> with contextual retrieval delivering sub-500 ms response latency."],
+    role: "Software Engineer 1", company: "Hewlett Packard Enterprise", period: "Feb 2024 – Jul 2025 · Bangalore, India", color: "#a855f7",
+    pts: [
+      "Built a <strong>Python automation framework</strong> for hardware self-installation workflows, cutting component replacement runtime by <strong>50%</strong> and removing manual intervention across 3 node types in enterprise storage systems.",
+      "Designed and shipped <strong>RESTful backend APIs</strong> and real-time monitoring dashboards to scale distributed storage clusters from <strong>8 to 16 nodes</strong>, supporting 6 PB+ deployments with live visibility into cluster health metrics.",
+      "Built a <strong>GPT-3.5 internal diagnostic chatbot</strong> with RAG-based contextual retrieval, achieving sub-500 ms response latency and reducing engineer triage time on storage incidents.",
+      "Wrote integration tests using Python unittest to validate <strong>Fibre Channel I/O</strong> operations on block sizes above 256 KB, lifting reliability metrics across 2 enterprise storage product lines.",
+    ],
   },
   {
-    role: "HubSpot Automations Engineer", company: "BluMountain (Remote)", period: "Feb 2023 – Aug 2023", color: "#3b82f6",
-    pts: ["Automated backend workflows using <strong>REST APIs</strong> across HubSpot, Zapier, and Salesforce, eliminating manual CRM operations.", "Built analytics dashboards processing multi-touch engagement data, supporting scalable SaaS workflows and a RevOps attribution model."],
-  },
-  {
-    role: "Full Stack Developer", company: "Ezyfyi.tech (Remote)", period: "Jul 2022 – Jan 2023", color: "#6366f1",
-    pts: ["Integrated <strong>FedEx and DHL APIs</strong> using Node.js for an international logistics client with full Jest test coverage and production deployment.", "Built a <strong>PostgreSQL-backed word-frequency system</strong> for a Discord crypto client with CI/CD automation via Jenkins."],
+    role: "HubSpot Automations Engineer", company: "BluMountain (Remote)", period: "Feb 2023 – Aug 2023", color: "#e879f9",
+    pts: [
+      "Designed and automated backend CRM workflows via <strong>REST API integrations</strong> across 3 platforms (HubSpot, Zapier, Salesforce), improving data consistency and eliminating repetitive manual pipeline operations.",
+      "Built analytics dashboards to process <strong>multi-touch engagement data</strong> for a growing SaaS customer base, enabling scalable reporting without manual data pulls.",
+    ],
   },
 ];
 
 const PROJECTS = [
-  { title: "Sahayata", type: "Full Stack / NLP", desc: "Emergency triage platform built during COVID-19. Uses NLP sentiment analysis to prioritize radio operator messages in real time. Supports 100+ concurrent users at sub-500 ms.", tech: ["React", "Flask", "Python", "MySQL", "NLP", "Node.js", "Express"], github: "https://github.com/Arya-Wadhwani07/dev-swe-emergencyresponse" },
-  { title: "Life-E-Line", type: "Backend Engineering", desc: "Organ-donation coordination backend connecting hospitals nationally. Async request handling sustains 1,000+ RPS under load. Built for reliability and data consistency.", tech: ["Node.js", "Express", "MongoDB", "React", "Heroku"], github: "https://github.com/Arya-Wadhwani07" },
-  { title: "LivStory", type: "Machine Learning", desc: "ML pipeline generating real-time contextual sound effects from narrative text using TextRank and NLP. Produced 550+ effects at 92% accuracy on labeled evaluation data.", tech: ["Python", "spaCy", "NLTK", "TensorFlow", "Flask", "Gensim"], github: "https://github.com/Arya-Wadhwani07/LivStory" },
-  { title: "HPE Diagnostic Chatbot", type: "AI / LLM Engineering", desc: "LLM-powered diagnostics assistant for HPE storage engineers built during the HPE CTY program. Contextual retrieval, sub-500 ms latency, integrated into live production workflows.", tech: ["Python", "GPT-3.5", "spaCy", "NLTK", "Flask", "Django"], github: null },
-  { title: "STC Recruitment Portal", type: "Full Stack", desc: "Online quiz-taking portal for students with an admin monitoring layer. Released to production with extensive edge-case testing at VIT Vellore.", tech: ["Node.js", "Azure", "NoSQL", "React", "Express"], github: null },
-  { title: "EZBUY", type: "Web Scraping / Data", desc: "Price comparison aggregator that scrapes Flipkart and Amazon in real time to surface the best deals across platforms.", tech: ["Python", "BeautifulSoup", "Scrapy", "Flask", "JavaScript"], github: "https://github.com/Arya-Wadhwani07/EZBUY" },
+  {
+    title: "Baseline",
+    type: "Full Stack / AI / DevOps",
+    desc: "Led backend and DevOps for a 10-person team building an AI-powered iOS habit tracker. Designed a 5-layer microservices architecture with API Gateway, Business Logic, and AI Orchestration. Deployed on Kubernetes with horizontal scaling and a dual data layer (PostgreSQL + Redis).",
+    tech: ["React Native", "TypeScript", "Node.js", "Flask", "PostgreSQL", "Redis", "Firebase", "Docker", "Kubernetes"],
+    github: null,
+  },
+  {
+    title: "BERT Shortcut Learning",
+    type: "NLP / Deep Learning Research",
+    desc: "Fine-tuned BERT-base-uncased across 4 fact-verification datasets, reaching 79.5% accuracy with macro F1 of 0.80. Implemented L-BFGS temperature calibration reducing ECE by up to 0.066, and built a NEI hard negative mining pipeline lifting PubHealth NEI recall from 0.37 to 0.88.",
+    tech: ["Python", "PyTorch", "HuggingFace", "Scikit-learn", "BERT", "NLP"],
+    github: null,
+  },
+  {
+    title: "Sahayata",
+    type: "Full Stack / NLP",
+    desc: "Designed RESTful APIs and a full-stack emergency triage app with NLP-based prioritization in Flask and React. Handles 100+ concurrent users and 500+ requests per hour at sub-500 ms response time.",
+    tech: ["React", "Flask", "Python", "MySQL", "Node.js", "Express"],
+    github: "https://github.com/Arya-Wadhwani07/dev-swe-emergencyresponse",
+  },
+  {
+    title: "Life-E-Line",
+    type: "Backend / Microservices",
+    desc: "Backend microservice for inter-hospital organ donation coordination using async request handling in Node.js, sustaining 1,000+ RPS during load tests with MongoDB-backed data consistency.",
+    tech: ["Node.js", "Express", "MongoDB", "React"],
+    github: "https://github.com/Arya-Wadhwani07",
+  },
+  {
+    title: "HPE Diagnostic Chatbot",
+    type: "AI / LLM Engineering",
+    desc: "GPT-3.5 powered internal chatbot with RAG-based contextual retrieval for HPE storage engineers. Sub-500 ms latency, integrated into live production incident triage workflows.",
+    tech: ["Python", "GPT-3.5", "RAG", "LangChain", "Flask"],
+    github: null,
+  },
+  {
+    title: "EZBUY",
+    type: "Web Scraping / Data",
+    desc: "Price comparison aggregator that scrapes Flipkart and Amazon in real time to surface the best deals across platforms instantly.",
+    tech: ["Python", "BeautifulSoup", "Scrapy", "Flask", "JavaScript"],
+    github: "https://github.com/Arya-Wadhwani07/EZBUY",
+  },
 ];
 
 const SKILLS_DATA = [
-  { g: "Languages",         t: ["Python", "Go", "Java", "C++", "JavaScript", "TypeScript", "SQL", "PHP", "Solidity", "Assembly", "Shell"] },
-  { g: "Backend & Systems", t: ["Node.js", "Express", "Flask", "Django", "REST APIs", "Microservices", "Multithreading", "GraphQL"] },
-  { g: "Frontend",          t: ["React", "HTML5", "CSS3", "Bootstrap", "Vanilla JS"] },
-  { g: "Databases",         t: ["MySQL", "PostgreSQL", "MongoDB", "SQLite", "Firebase", "Oracle SQL"] },
-  { g: "Cloud & DevOps",    t: ["AWS (EC2, S3)", "Azure", "Docker", "Kubernetes", "Jenkins", "CI/CD", "Heroku"] },
-  { g: "AI / ML",           t: ["TensorFlow", "PyTorch", "Scikit-learn", "NLP", "spaCy", "NLTK", "Gensim", "GPT APIs", "LangChain"] },
-  { g: "Automation & CRM",  t: ["HubSpot", "Zapier", "Salesforce", "Zoho", "Selenium", "Scrapy"] },
-  { g: "Core CS",           t: ["DSA", "OOP", "Distributed Systems", "Storage Area Networks", "IOT", "Blockchain"] },
+  { g: "Languages",            t: ["Python", "Java", "C++", "Go", "JavaScript", "TypeScript", "SQL"] },
+  { g: "Backend & Systems",    t: ["RESTful API Design", "Microservices", "Multithreading", "Async I/O", "Distributed Systems", "System Design"] },
+  { g: "Frameworks & Libraries", t: ["Flask", "Node.js", "Express", "Django", "React", "TensorFlow", "PyTorch", "Scikit-learn"] },
+  { g: "Databases",            t: ["MySQL", "PostgreSQL", "MongoDB", "SQLite", "Redis"] },
+  { g: "Cloud, DevOps & Testing", t: ["AWS (EC2, S3)", "Docker", "Kubernetes", "Git", "CI/CD Pipelines", "PyTest", "Jest"] },
+  { g: "AI / ML",              t: ["BERT", "HuggingFace", "RAG", "LangChain", "GPT APIs", "NLP", "Fine-tuning", "Scikit-learn"] },
+  { g: "Core CS",              t: ["Data Structures & Algorithms", "OOP", "Agile", "Kanban", "System Design"] },
 ];
 
 const CERTS = [
@@ -1245,8 +1284,8 @@ export default function App() {
                   style={{
                     width: "100%", height: "100%", objectFit: "cover",
                     borderRadius: "var(--r)",
-                    border: "2px solid rgba(34,211,238,0.3)",
-                    boxShadow: "0 0 40px rgba(34,211,238,0.12), 0 0 80px rgba(34,211,238,0.06)",
+                    border: "2px solid rgba(168,85,247,0.35)",
+                    boxShadow: "0 0 40px rgba(168,85,247,0.15), 0 0 80px rgba(168,85,247,0.06)",
                     display: "block",
                   }}
                 />
@@ -1260,7 +1299,7 @@ export default function App() {
                   <span style={{ fontFamily:"var(--font-m)", fontSize:".6rem", color:"var(--muted)", marginLeft:8 }}>arya@portfolio:~</span>
                 </div>
                 <div className="term-bd">
-                  {[["$ whoami","arya_jay_wadhwani"],["$ location","Los Angeles, CA"],["$ degree","USC MS CS (Aug 2025)"],["$ prev_role","HPE Software Engineer I"],["$ open_to","SWE / ML / AI Roles"]].map(([cmd,out],i)=>(
+                  {[["$ whoami","arya_jay_wadhwani"],["$ location","Los Angeles, CA"],["$ education","USC MS CS · GPA 3.65"],["$ prev_role","HPE Software Engineer 1"],["$ focus","SWE · AI/ML · Systems"],["$ open_to","Full-time SWE / ML Roles"]].map(([cmd,out],i)=>(
                     <div key={i}><span className="tc2">{cmd}</span><br /><span className="to">  {out}</span><br /></div>
                   ))}
                 </div>
@@ -1277,8 +1316,8 @@ export default function App() {
           <h2 className="st reveal d1">Academic Journey</h2>
           <div className="edu-g">
             {[
-              { deg:"Master of Science, Computer Science", school:"University of Southern California", loc:"Los Angeles, CA", period:"Aug 2025 – May 2027", gpa:"3.65", gu:"GPA / 4.0", courses:["Analysis of Algorithms","Database Systems","Software Engineering","AI Research"], n:"01" },
-              { deg:"B.Tech, Computer Science and Engineering", school:"Vellore Institute of Technology", loc:"Tamil Nadu, India", period:"Sept 2020 – May 2024", gpa:"9.58", gu:"CGPA / 10", courses:["OS","Data Structures","Machine Learning","Networks","AI"], n:"02" },
+              { deg:"Master of Science, Computer Science", school:"University of Southern California", loc:"Los Angeles, CA", period:"Aug 2025 – May 2027", gpa:"3.65", gu:"GPA / 4.0", courses:["Analysis of Algorithms","Database Systems","Software Engineering","Machine Learning"], n:"01" },
+              { deg:"B.Tech, Computer Science and Engineering", school:"Vellore Institute of Technology", loc:"Tamil Nadu, India", period:"Sept 2020 – May 2024", gpa:"9.58", gu:"CGPA / 10", courses:["Operating Systems","Data Structures & Algorithms","Networks and Communication"], n:"02" },
               { deg:"ISC 12th Standard", school:"The Bishop's School Junior College", loc:"Camp, Pune", period:"June 2018 – June 2020", gpa:"96%", gu:"Percentage", courses:["Physics","Chemistry","Mathematics","Computer Science"], n:"03" },
               { deg:"ICSE 10th Standard", school:"The Bishop's School", loc:"Camp, Pune", period:"June 2017 – May 2018", gpa:"96%", gu:"Percentage", courses:["Mathematics","Science","Computer Applications","Literature"], n:"04" },
             ].map((e,i)=>(
