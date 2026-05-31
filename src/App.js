@@ -1182,27 +1182,9 @@ const DOC_ICON = <svg width="13" height="13" viewBox="0 0 24 24" fill="none" str
 export default function App() {
   useReveal(); useNavScroll();
 
-  // Browser tab title + favicon
+  // Browser tab title
   useEffect(() => {
     document.title = "Arya Wadhwani | Portfolio";
-    // Inline SVG favicon — hexagon logo matching the site logo
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">
-      <defs>
-        <linearGradient id="g" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#a855f7"/><stop offset="1" stop-color="#e879f9"/>
-        </linearGradient>
-      </defs>
-      <rect width="60" height="60" rx="12" fill="#04060f"/>
-      <path d="M30 4L54 17.5V42.5L30 56L6 42.5V17.5L30 4Z" stroke="url(#g)" stroke-width="1.5" fill="rgba(34,211,238,0.08)"/>
-      <path d="M22 43L30 18L38 43" stroke="url(#g)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <line x1="25" y1="36" x2="35" y2="36" stroke="url(#g)" stroke-width="2.5" stroke-linecap="round"/>
-      <circle cx="30" cy="18" r="2.5" fill="#e879f9"/>
-    </svg>`;
-    const link = document.querySelector("link[rel*='icon']") || document.createElement("link");
-    link.type = "image/svg+xml";
-    link.rel = "icon";
-    link.href = "data:image/svg+xml;base64," + btoa(svg);
-    document.head.appendChild(link);
   }, []);
   return (
     <>
@@ -1224,7 +1206,7 @@ export default function App() {
           ))}
         </ul>
         <div className="nav-cta-wrap">
-          <a href="https://drive.google.com/your-resume-link" target="_blank" rel="noopener noreferrer" className="nav-cta">
+          <a href="https://drive.google.com/file/d/13IXOtp5tG8QycAtTt_JwhG3y6i0XgZ9c/view?usp=share_link" target="_blank" rel="noopener noreferrer" className="nav-cta">
             {DOC_ICON} Resume
           </a>
         </div>
@@ -1247,7 +1229,7 @@ export default function App() {
           <div className="hero-cta">
             <a href="#projects" className="btn-p">View Projects ↗</a>
             <a href="#contact"  className="btn-s">Get In Touch</a>
-            <a href="https://drive.google.com/your-resume-link" target="_blank" rel="noopener noreferrer" className="btn-s">{DOC_ICON} Resume</a>
+            <a href="https://drive.google.com/file/d/13IXOtp5tG8QycAtTt_JwhG3y6i0XgZ9c/view?usp=share_link" target="_blank" rel="noopener noreferrer" className="btn-s">{DOC_ICON} Resume</a>
           </div>
         </div>
 
@@ -1447,7 +1429,7 @@ export default function App() {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.15 2.28 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.91-.91a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
               (213) 296-4961
             </a>
-            <a href="https://drive.google.com/your-resume-link" target="_blank" rel="noopener noreferrer" className="clk">{DOC_ICON} Resume</a>
+            <a href="https://drive.google.com/file/d/13IXOtp5tG8QycAtTt_JwhG3y6i0XgZ9c/view?usp=share_link" target="_blank" rel="noopener noreferrer" className="clk">{DOC_ICON} Resume</a>
           </div>
         </div>
       </section>
