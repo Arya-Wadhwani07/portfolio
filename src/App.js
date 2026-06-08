@@ -1261,7 +1261,7 @@ export default function App() {
               {/* PHOTO */}
               <div className="photo-ph reveal d1" style={{ padding: 0, border: "none", background: "none" }}>
                 <img
-                  src="/arya_portrait.png"
+                  src={`${process.env.PUBLIC_URL}/arya_potrait.jpeg`}
                   alt="Arya Wadhwani at Hewlett Packard Enterprise"
                   style={{
                     width: "100%", height: "100%", objectFit: "cover",
